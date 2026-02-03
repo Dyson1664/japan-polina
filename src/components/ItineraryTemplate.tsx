@@ -463,186 +463,195 @@ const TripHighlights = memo(({ data }: { data: CountryData }) => {
 });
 
 // Hotel Image Gallery Component - inner carousel for multiple images
-const HotelImageGallery = memo(({ accommodation, className }: { accommodation: AccommodationHighlight; className?: string }) => {
-  const [api, setApi] = useState<CarouselApi | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const HotelImageGallery = memo(
+  ({
+    accommodation,
+    className,
+    disableSwipeOnMobile,
+  }: {
+    accommodation: AccommodationHighlight;
+    className?: string;
+    disableSwipeOnMobile?: boolean;
+  }) => {
+    const [api, setApi] = useState<CarouselApi | null>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-  const allImages = useMemo(() => {
-    const imgs: string[] = [];
-    if (accommodation.images && accommodation.images.length > 0) {
-      imgs.push(...accommodation.images);
-    } else if (accommodation.image) {
-      imgs.push(accommodation.image);
+    const allImages = useMemo(() => {
+      const imgs: string[] = [];
+      if (accommodation.images && accommodation.images.length > 0) {
+        imgs.push(...accommodation.images);
+      } else if (accommodation.image) {
+        imgs.push(accommodation.image);
+      }
+      return imgs;
+    }, [accommodation.images, accommodation.image]);
+
+    // Update current index when carousel changes
+    useEffect(() => {
+      if (!api) return;
+
+      const onSelect = () => setCurrentIndex(api.selectedScrollSnap());
+      api.on("select", onSelect);
+      onSelect();
+
+      // If your CarouselApi supports off(), uncomment:
+      // return () => api.off("select", onSelect);
+    }, [api]);
+
+    // Single image - no carousel needed
+    if (allImages.length <= 1) {
+      return (
+        <img
+          src={allImages[0] || accommodation.image}
+          alt={accommodation.title}
+          className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
+          loading="lazy"
+        />
+      );
     }
-    return imgs;
-  }, [accommodation.images, accommodation.image]);
 
-  // Update current index when carousel changes
-  useEffect(() => {
-    if (!api) return;
-    
-    const onSelect = () => {
-      setCurrentIndex(api.selectedScrollSnap());
-    };
-    
-    api.on("select", onSelect);
-    onSelect(); // Set initial state
-  }, [api]);
-
-  // Single image - no carousel needed
-  if (allImages.length <= 1) {
     return (
-      <img
-        src={allImages[0] || accommodation.image}
-        alt={accommodation.title}
-        className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
-        loading="lazy"
-      />
-    );
-  }
+      <div className="relative group">
+        <Carousel
+          className="w-full"
+          setApi={setApi}
+          // ✅ Key fix: prevent inner carousel from eating horizontal swipes on mobile
+          opts={{
+            ...(disableSwipeOnMobile ? { watchDrag: false } : {}),
+          }}
+        >
+          <CarouselContent>
+            {allImages.map((img, idx) => (
+              <CarouselItem key={idx}>
+                <img
+                  src={img}
+                  alt={`${accommodation.title} - ${idx + 1}`}
+                  className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
+                  loading="lazy"
+                  // Helps mobile scroll feel nicer
+                  draggable={false}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
 
-  // Multiple images - use inner carousel with arrows
-  // On mobile, show dots for navigation; swipe naturally moves between images
-  return (
-    <div className="relative group">
-      <Carousel 
-        className="w-full" 
-        setApi={setApi}
-      >
-        <CarouselContent>
-          {allImages.map((img, idx) => (
-            <CarouselItem key={idx}>
-              <img
-                src={img}
-                alt={`${accommodation.title} - ${idx + 1}`}
-                className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
-                loading="lazy"
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        
-        {/* Desktop arrows - sleek pill design, appear on hover */}
-        <button
-          onClick={() => api?.scrollPrev()}
-          className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 
-                     opacity-0 group-hover:opacity-100 
-                     transition-all duration-300 ease-out
-                     bg-white/95 backdrop-blur-sm hover:bg-white 
-                     hover:scale-110 active:scale-95
-                     shadow-lg hover:shadow-xl
-                     h-8 w-8 rounded-full
-                     items-center justify-center
-                     border border-black/5"
-          aria-label="Previous image"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className="text-foreground/80"
-          >
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => api?.scrollNext()}
-          className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 
-                     opacity-0 group-hover:opacity-100 
-                     transition-all duration-300 ease-out
-                     bg-white/95 backdrop-blur-sm hover:bg-white 
-                     hover:scale-110 active:scale-95
-                     shadow-lg hover:shadow-xl
-                     h-8 w-8 rounded-full
-                     items-center justify-center
-                     border border-black/5"
-          aria-label="Next image"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className="text-foreground/80"
-          >
-            <path d="m9 18 6-6-6-6"/>
-          </svg>
-        </button>
-      </Carousel>
-      
-      {/* Dots indicator - shows current position */}
-      <div className="flex justify-center gap-2 mt-3">
-        {allImages.map((_, idx) => (
+          {/* Desktop arrows */}
           <button
-            key={idx}
-            onClick={() => api?.scrollTo(idx)}
-            className={`transition-all duration-300 rounded-full ${
-              idx === currentIndex 
-                ? "bg-primary w-4 h-1.5" 
-                : "bg-primary/25 hover:bg-primary/40 w-1.5 h-1.5"
-            }`}
-            aria-label={`Go to image ${idx + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-});
+            type="button"
+            onClick={() => api?.scrollPrev()}
+            className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2
+                       opacity-0 group-hover:opacity-100
+                       transition-all duration-300 ease-out
+                       bg-white/95 backdrop-blur-sm hover:bg-white
+                       hover:scale-110 active:scale-95
+                       shadow-lg hover:shadow-xl
+                       h-8 w-8 rounded-full
+                       items-center justify-center
+                       border border-black/5"
+            aria-label="Previous image"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-foreground/80"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
 
-// WhereWeStay Component - Same layout as TripHighlights
+          <button
+            type="button"
+            onClick={() => api?.scrollNext()}
+            className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2
+                       opacity-0 group-hover:opacity-100
+                       transition-all duration-300 ease-out
+                       bg-white/95 backdrop-blur-sm hover:bg-white
+                       hover:scale-110 active:scale-95
+                       shadow-lg hover:shadow-xl
+                       h-8 w-8 rounded-full
+                       items-center justify-center
+                       border border-black/5"
+            aria-label="Next image"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-foreground/80"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </Carousel>
+
+        {/* Dots indicator */}
+        <div className="flex justify-center gap-2 mt-3">
+          {allImages.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => api?.scrollTo(idx)}
+              className={`transition-all duration-300 rounded-full ${
+                idx === currentIndex ? "bg-primary w-4 h-1.5" : "bg-primary/25 hover:bg-primary/40 w-1.5 h-1.5"
+              }`}
+              aria-label={`Go to image ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  },
+);
+
+
 const WhereWeStay = memo(({ data }: { data: CountryData }) => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const desktopVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const mobileVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
-  // Reset all videos (desktop + mobile) so posters/cover images show again
   const resetAllVideos = useCallback(() => {
     desktopVideoRefs.current.forEach((v) => {
-      if (v) {
-        v.pause();
-        v.currentTime = 0;
-        v.load();
-      }
+      if (!v) return;
+      v.pause();
+      v.currentTime = 0;
+      v.load();
     });
 
     mobileVideoRefs.current.forEach((v) => {
-      if (v) {
-        v.pause();
-        v.currentTime = 0;
-        v.load();
-      }
+      if (!v) return;
+      v.pause();
+      v.currentTime = 0;
+      v.load();
     });
 
     setActiveVideo(null);
   }, []);
 
-  // Whenever the carousel slide changes (desktop), reset videos
   useEffect(() => {
     if (!carouselApi) return;
-
-    const onSelect = () => {
-      resetAllVideos();
-    };
-
+    const onSelect = () => resetAllVideos();
     carouselApi.on("select", onSelect);
+    // if supported:
+    // return () => carouselApi.off("select", onSelect);
   }, [carouselApi, resetAllVideos]);
 
   const handlePlay = (index: number, mode: "desktop" | "mobile") => {
     const refs = mode === "desktop" ? desktopVideoRefs.current : mobileVideoRefs.current;
 
-    // Reset all *other* videos so they go back to their cover photos
     refs.forEach((v, i) => {
       if (v && i !== index) {
         v.pause();
@@ -659,35 +668,30 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
     }
   };
 
-  // Auto-generate accommodations from itinerary if not explicitly provided
   const accommodations = useMemo(() => {
-    if (data.accommodations && data.accommodations.length > 0) {
-      return data.accommodations;
-    }
+    if (data.accommodations && data.accommodations.length > 0) return data.accommodations;
 
-    // Otherwise, extract unique accommodations from itinerary days
     const seen = new Set<string>();
     const extracted: AccommodationHighlight[] = [];
 
     for (const day of data.itinerary) {
-      if (day.accommodation?.name && !seen.has(day.accommodation.name)) {
-        // Skip "Check-out" or similar non-accommodation entries
-        if (day.accommodation.name.toLowerCase().includes("check-out")) continue;
-        
-        seen.add(day.accommodation.name);
-        extracted.push({
-          title: day.accommodation.name,
-          description: day.location ? `Your home base in ${day.location}` : undefined,
-          image: day.heroImage || data.heroImage
-        });
-      }
+      const name = day.accommodation?.name;
+      if (!name) continue;
+      if (name.toLowerCase().includes("check-out")) continue;
+      if (seen.has(name)) continue;
+
+      seen.add(name);
+      extracted.push({
+        title: name,
+        description: day.location ? `Your home base in ${day.location}` : undefined,
+        image: day.heroImage || data.heroImage,
+      });
     }
 
     return extracted;
   }, [data.accommodations, data.itinerary, data.heroImage]);
 
-  // Don't render if no accommodations
-  if (!accommodations || accommodations.length === 0) return null;
+  if (!accommodations.length) return null;
 
   return (
     <div
@@ -696,85 +700,74 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
                  md:w-auto md:left-auto md:right-auto md:ml-0 md:mr-0 md:rounded-2xl mt-10 md:mt-16
                  px-4 md:px-6 py-8"
     >
-      {/* Mobile: Just title */}
       <h2 className="md:hidden text-2xl font-bold text-primary mb-4">Where We Stay</h2>
 
-      <div className="relative">
-        {/* Desktop */}
-        {accommodations.length <= 2 ? (
-          // If everything fits, avoid carousel entirely (prevents “missing” content + no arrows)
-          <div className="hidden md:block">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-primary">Where We Stay</h2>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {accommodations.map((accommodation, index) => {
-                const isPlaying = activeVideo === index;
-
-                return (
-                  <div key={index} className="space-y-3">
-                    {/* VIDEO (DESKTOP) */}
-                    {accommodation.video ? (
-                      <div
-                        className="relative w-full max-w-md mx-auto rounded-2xl shadow-md overflow-hidden bg-black"
-                        style={{ aspectRatio: "5 / 8" }}
-                      >
-                        <video
-                          ref={(el) => (desktopVideoRefs.current[index] = el)}
-                          src={accommodation.video}
-                          poster={accommodation.image}
-                          className="w-full h-full object-cover"
-                          controls={isPlaying}
-                          playsInline
-                        />
-
-                        {/* PLAY BUTTON */}
-                        {!isPlaying && (
-                          <button
-                            onClick={() => handlePlay(index, "desktop")}
-                            className="absolute inset-0 flex items-center justify-center z-20"
-                          >
-                            <div className="bg-white/90 p-4 rounded-full shadow-lg">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="32"
-                                height="32"
-                                fill="black"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            </div>
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <HotelImageGallery 
-                        accommodation={accommodation} 
-                        className="w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"
-                      />
-                    )}
-
-                    {/* TEXT BELOW */}
-                    <div className="text-center space-y-2">
-                      <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
-                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                        {accommodation.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      {/* ===================== DESKTOP ===================== */}
+      {accommodations.length <= 2 ? (
+        <div className="hidden md:block">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-primary">Where We Stay</h2>
           </div>
-        ) : (
-          <Carousel 
-            className="hidden md:block w-full max-w-none mx-auto" 
+
+          <div className="grid grid-cols-2 gap-4">
+            {accommodations.map((accommodation, index) => {
+              const isPlaying = activeVideo === index;
+
+              return (
+                <div key={index} className="space-y-3">
+                  {accommodation.video ? (
+                    <div
+                      className="relative w-full max-w-md mx-auto rounded-2xl shadow-md overflow-hidden bg-black"
+                      style={{ aspectRatio: "5 / 8" }}
+                    >
+                      <video
+                        ref={(el) => (desktopVideoRefs.current[index] = el)}
+                        src={accommodation.video}
+                        poster={accommodation.image}
+                        className="w-full h-full object-cover"
+                        controls={isPlaying}
+                        playsInline
+                      />
+
+                      {!isPlaying && (
+                        <button
+                          type="button"
+                          onClick={() => handlePlay(index, "desktop")}
+                          className="absolute inset-0 flex items-center justify-center z-20"
+                        >
+                          <div className="bg-white/90 p-4 rounded-full shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <HotelImageGallery
+                      accommodation={accommodation}
+                      className="w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"
+                    />
+                  )}
+
+                  <div className="text-center space-y-2">
+                    <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                      {accommodation.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="hidden md:block">
+          <Carousel
+            className="w-full max-w-none mx-auto"
             setApi={setCarouselApi}
             opts={{ slidesToScroll: 1, align: "start" }}
           >
-            {/* Desktop: Title with arrows in same row */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-primary">Where We Stay</h2>
               <div className="flex gap-2">
@@ -790,7 +783,6 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
                 return (
                   <CarouselItem key={index} className="pl-4 basis-1/2">
                     <div className="space-y-3">
-                      {/* VIDEO (DESKTOP) */}
                       {accommodation.video ? (
                         <div
                           className="relative w-full max-w-md mx-auto rounded-2xl shadow-md overflow-hidden bg-black"
@@ -805,20 +797,14 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
                             playsInline
                           />
 
-                          {/* PLAY BUTTON */}
                           {!isPlaying && (
                             <button
+                              type="button"
                               onClick={() => handlePlay(index, "desktop")}
                               className="absolute inset-0 flex items-center justify-center z-20"
                             >
                               <div className="bg-white/90 p-4 rounded-full shadow-lg">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="32"
-                                  height="32"
-                                  fill="black"
-                                  viewBox="0 0 24 24"
-                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
                                   <path d="M8 5v14l11-7z" />
                                 </svg>
                               </div>
@@ -826,13 +812,12 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
                           )}
                         </div>
                       ) : (
-                        <HotelImageGallery 
-                          accommodation={accommodation} 
+                        <HotelImageGallery
+                          accommodation={accommodation}
                           className="w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"
                         />
                       )}
 
-                      {/* TEXT BELOW */}
                       <div className="text-center space-y-2">
                         <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
                         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
@@ -845,80 +830,77 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
               })}
             </CarouselContent>
           </Carousel>
-        )}
+        </div>
+      )}
 
-        {/* Mobile: Swipeable container with peek */}
-        <div className="md:hidden overflow-x-auto overflow-y-hidden scrollbar-none scroll-smooth snap-x snap-mandatory">
-          <div className="flex pb-2">
-            {accommodations.map((accommodation, index) => {
-              const isPlaying = activeVideo === index;
+      {/* ===================== MOBILE (FIXED) ===================== */}
+      <div className="md:hidden overflow-x-auto overflow-y-hidden scrollbar-none scroll-smooth snap-x snap-mandatory touch-pan-x">
+        <div className="flex pb-2">
+          {accommodations.map((accommodation, index) => {
+            const isPlaying = activeVideo === index;
 
-              return (
-                <div
-                  key={index}
-                  className="flex-shrink-0 snap-start snap-always"
-                  style={{ width: "calc(100vw - 3rem)", paddingRight: "0.75rem" }}
-                >
-                  <div className="space-y-3 w-full max-w-80 mx-auto">
-                    {/* VIDEO (MOBILE) */}
-                    {accommodation.video ? (
-                      <div
-                        className="relative w-full rounded-2xl overflow-hidden shadow-md bg-black"
-                        style={{ aspectRatio: "5 / 8" }}
-                      >
-                        <video
-                          ref={(el) => (mobileVideoRefs.current[index] = el)}
-                          src={accommodation.video}
-                          poster={accommodation.image}
-                          className="w-full h-full object-cover"
-                          controls={isPlaying}
-                          playsInline
-                        />
-
-                        {/* PLAY BUTTON */}
-                        {!isPlaying && (
-                          <button
-                            onClick={() => handlePlay(index, "mobile")}
-                            className="absolute inset-0 flex items-center justify-center z-20"
-                          >
-                            <div className="bg-white/90 p-4 rounded-full shadow-lg">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="32"
-                                height="32"
-                                fill="black"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            </div>
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <HotelImageGallery 
-                        accommodation={accommodation} 
-                        className="w-full h-56 object-cover rounded-2xl shadow-md"
+            return (
+              <div
+                key={index}
+                className="flex-shrink-0 snap-start snap-always"
+                style={{ width: "calc(100vw - 3rem)", paddingRight: "0.75rem" }}
+              >
+                <div className="space-y-3 w-full max-w-80 mx-auto">
+                  {accommodation.video ? (
+                    <div
+                      className="relative w-full rounded-2xl overflow-hidden shadow-md bg-black touch-pan-x"
+                      style={{ aspectRatio: "5 / 8" }}
+                    >
+                      <video
+                        ref={(el) => (mobileVideoRefs.current[index] = el)}
+                        src={accommodation.video}
+                        poster={accommodation.image}
+                        className="w-full h-full object-cover"
+                        controls={isPlaying}
+                        playsInline
                       />
-                    )}
 
-                    {/* TEXT BELOW */}
-                    <div className="text-center space-y-2">
-                      <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {accommodation.description}
-                      </p>
+                      {!isPlaying && (
+                        <button
+                          type="button"
+                          onClick={() => handlePlay(index, "mobile")}
+                          className="absolute inset-0 flex items-center justify-center z-20"
+                        >
+                          <div className="bg-white/90 p-4 rounded-full shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </button>
+                      )}
                     </div>
+                  ) : (
+                    <HotelImageGallery
+                      accommodation={accommodation}
+                      className="w-full h-56 object-cover rounded-2xl shadow-md"
+                      // ✅ KEY FIX: don’t let inner gallery hijack swipe on mobile
+                      disableSwipeOnMobile
+                    />
+                  )}
+
+                  <div className="text-center space-y-2">
+                    <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {accommodation.description}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 });
+
+
+
 
 const AboutSection = memo(({ data }: { data: CountryData }) => {
   const countryName = useMemo(() => {
