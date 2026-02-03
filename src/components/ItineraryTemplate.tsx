@@ -467,11 +467,9 @@ const HotelImageGallery = memo(
   ({
     accommodation,
     className,
-    disableSwipeOnMobile,
   }: {
     accommodation: AccommodationHighlight;
     className?: string;
-    disableSwipeOnMobile?: boolean;
   }) => {
     const [api, setApi] = useState<CarouselApi | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -490,11 +488,14 @@ const HotelImageGallery = memo(
     useEffect(() => {
       if (!api) return;
 
-      const onSelect = () => setCurrentIndex(api.selectedScrollSnap());
+      const onSelect = () => {
+        setCurrentIndex(api.selectedScrollSnap());
+      };
+
       api.on("select", onSelect);
       onSelect();
 
-      // If your CarouselApi supports off(), uncomment:
+      // If your CarouselApi supports off():
       // return () => api.off("select", onSelect);
     }, [api]);
 
@@ -506,20 +507,15 @@ const HotelImageGallery = memo(
           alt={accommodation.title}
           className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
           loading="lazy"
+          draggable={false}
         />
       );
     }
 
     return (
-      <div className="relative group">
-        <Carousel
-          className="w-full"
-          setApi={setApi}
-          // ✅ Key fix: prevent inner carousel from eating horizontal swipes on mobile
-          opts={{
-            ...(disableSwipeOnMobile ? { watchDrag: false } : {}),
-          }}
-        >
+      // ✅ This marker lets the OUTER carousel detect “drag started inside nested carousel”
+      <div className="relative group" data-nested-carousel="true">
+        <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
             {allImages.map((img, idx) => (
               <CarouselItem key={idx}>
@@ -528,7 +524,6 @@ const HotelImageGallery = memo(
                   alt={`${accommodation.title} - ${idx + 1}`}
                   className={className || "w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"}
                   loading="lazy"
-                  // Helps mobile scroll feel nicer
                   draggable={false}
                 />
               </CarouselItem>
@@ -605,7 +600,9 @@ const HotelImageGallery = memo(
               type="button"
               onClick={() => api?.scrollTo(idx)}
               className={`transition-all duration-300 rounded-full ${
-                idx === currentIndex ? "bg-primary w-4 h-1.5" : "bg-primary/25 hover:bg-primary/40 w-1.5 h-1.5"
+                idx === currentIndex
+                  ? "bg-primary w-4 h-1.5"
+                  : "bg-primary/25 hover:bg-primary/40 w-1.5 h-1.5"
               }`}
               aria-label={`Go to image ${idx + 1}`}
             />
@@ -621,33 +618,33 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const desktopVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const mobileVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [desktopCarouselApi, setDesktopCarouselApi] = useState<CarouselApi | null>(null);
 
   const resetAllVideos = useCallback(() => {
     desktopVideoRefs.current.forEach((v) => {
-      if (!v) return;
-      v.pause();
-      v.currentTime = 0;
-      v.load();
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+        v.load();
+      }
     });
-
     mobileVideoRefs.current.forEach((v) => {
-      if (!v) return;
-      v.pause();
-      v.currentTime = 0;
-      v.load();
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+        v.load();
+      }
     });
-
     setActiveVideo(null);
   }, []);
 
   useEffect(() => {
-    if (!carouselApi) return;
+    if (!desktopCarouselApi) return;
     const onSelect = () => resetAllVideos();
-    carouselApi.on("select", onSelect);
+    desktopCarouselApi.on("select", onSelect);
     // if supported:
-    // return () => carouselApi.off("select", onSelect);
-  }, [carouselApi, resetAllVideos]);
+    // return () => desktopCarouselApi.off("select", onSelect);
+  }, [desktopCarouselApi, resetAllVideos]);
 
   const handlePlay = (index: number, mode: "desktop" | "mobile") => {
     const refs = mode === "desktop" ? desktopVideoRefs.current : mobileVideoRefs.current;
@@ -669,27 +666,8 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
   };
 
   const accommodations = useMemo(() => {
-    if (data.accommodations && data.accommodations.length > 0) return data.accommodations;
-
-    const seen = new Set<string>();
-    const extracted: AccommodationHighlight[] = [];
-
-    for (const day of data.itinerary) {
-      const name = day.accommodation?.name;
-      if (!name) continue;
-      if (name.toLowerCase().includes("check-out")) continue;
-      if (seen.has(name)) continue;
-
-      seen.add(name);
-      extracted.push({
-        title: name,
-        description: day.location ? `Your home base in ${day.location}` : undefined,
-        image: day.heroImage || data.heroImage,
-      });
-    }
-
-    return extracted;
-  }, [data.accommodations, data.itinerary, data.heroImage]);
+    return data.accommodations && data.accommodations.length > 0 ? data.accommodations : [];
+  }, [data.accommodations]);
 
   if (!accommodations.length) return null;
 
@@ -702,70 +680,69 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
     >
       <h2 className="md:hidden text-2xl font-bold text-primary mb-4">Where We Stay</h2>
 
-      {/* ===================== DESKTOP ===================== */}
-      {accommodations.length <= 2 ? (
-        <div className="hidden md:block">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-primary">Where We Stay</h2>
-          </div>
+      <div className="relative">
+        {/* ===================== DESKTOP ===================== */}
+        {accommodations.length <= 2 ? (
+          <div className="hidden md:block">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-primary">Where We Stay</h2>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {accommodations.map((accommodation, index) => {
-              const isPlaying = activeVideo === index;
+            <div className="grid grid-cols-2 gap-4">
+              {accommodations.map((accommodation, index) => {
+                const isPlaying = activeVideo === index;
 
-              return (
-                <div key={index} className="space-y-3">
-                  {accommodation.video ? (
-                    <div
-                      className="relative w-full max-w-md mx-auto rounded-2xl shadow-md overflow-hidden bg-black"
-                      style={{ aspectRatio: "5 / 8" }}
-                    >
-                      <video
-                        ref={(el) => (desktopVideoRefs.current[index] = el)}
-                        src={accommodation.video}
-                        poster={accommodation.image}
-                        className="w-full h-full object-cover"
-                        controls={isPlaying}
-                        playsInline
+                return (
+                  <div key={index} className="space-y-3">
+                    {accommodation.video ? (
+                      <div
+                        className="relative w-full max-w-md mx-auto rounded-2xl shadow-md overflow-hidden bg-black"
+                        style={{ aspectRatio: "5 / 8" }}
+                      >
+                        <video
+                          ref={(el) => (desktopVideoRefs.current[index] = el)}
+                          src={accommodation.video}
+                          poster={accommodation.image}
+                          className="w-full h-full object-cover"
+                          controls={isPlaying}
+                          playsInline
+                        />
+                        {!isPlaying && (
+                          <button
+                            type="button"
+                            onClick={() => handlePlay(index, "desktop")}
+                            className="absolute inset-0 flex items-center justify-center z-20"
+                          >
+                            <div className="bg-white/90 p-4 rounded-full shadow-lg">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <HotelImageGallery
+                        accommodation={accommodation}
+                        className="w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"
                       />
+                    )}
 
-                      {!isPlaying && (
-                        <button
-                          type="button"
-                          onClick={() => handlePlay(index, "desktop")}
-                          className="absolute inset-0 flex items-center justify-center z-20"
-                        >
-                          <div className="bg-white/90 p-4 rounded-full shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </div>
-                        </button>
-                      )}
+                    <div className="text-center space-y-2">
+                      <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                        {accommodation.description}
+                      </p>
                     </div>
-                  ) : (
-                    <HotelImageGallery
-                      accommodation={accommodation}
-                      className="w-full h-56 md:h-64 lg:h-72 object-cover rounded-2xl shadow-md"
-                    />
-                  )}
-
-                  <div className="text-center space-y-2">
-                    <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      {accommodation.description}
-                    </p>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="hidden md:block">
+        ) : (
           <Carousel
-            className="w-full max-w-none mx-auto"
-            setApi={setCarouselApi}
+            className="hidden md:block w-full max-w-none mx-auto"
+            setApi={setDesktopCarouselApi}
             opts={{ slidesToScroll: 1, align: "start" }}
           >
             <div className="flex justify-between items-center mb-4">
@@ -796,7 +773,6 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
                             controls={isPlaying}
                             playsInline
                           />
-
                           {!isPlaying && (
                             <button
                               type="button"
@@ -830,69 +806,82 @@ const WhereWeStay = memo(({ data }: { data: CountryData }) => {
               })}
             </CarouselContent>
           </Carousel>
-        </div>
-      )}
+        )}
 
-      {/* ===================== MOBILE (FIXED) ===================== */}
-      <div className="md:hidden overflow-x-auto overflow-y-hidden scrollbar-none scroll-smooth snap-x snap-mandatory touch-pan-x">
-        <div className="flex pb-2">
-          {accommodations.map((accommodation, index) => {
-            const isPlaying = activeVideo === index;
+        {/* ===================== MOBILE (KEY FIX) ===================== */}
+        <div className="md:hidden">
+          <Carousel
+            className="w-full"
+            opts={{
+              align: "start",
+              slidesToScroll: 1,
+              // ✅ If drag starts inside a nested image carousel, DON'T drag hotels
+              watchDrag: (evt: any) => {
+                const target = evt?.target as HTMLElement | null;
+                if (!target) return true;
+                if (target.closest('[data-nested-carousel="true"]')) return false;
+                return true;
+              },
+            }}
+          >
+            <CarouselContent className="-ml-4">
+              {accommodations.map((accommodation, index) => {
+                const isPlaying = activeVideo === index;
 
-            return (
-              <div
-                key={index}
-                className="flex-shrink-0 snap-start snap-always"
-                style={{ width: "calc(100vw - 3rem)", paddingRight: "0.75rem" }}
-              >
-                <div className="space-y-3 w-full max-w-80 mx-auto">
-                  {accommodation.video ? (
-                    <div
-                      className="relative w-full rounded-2xl overflow-hidden shadow-md bg-black touch-pan-x"
-                      style={{ aspectRatio: "5 / 8" }}
-                    >
-                      <video
-                        ref={(el) => (mobileVideoRefs.current[index] = el)}
-                        src={accommodation.video}
-                        poster={accommodation.image}
-                        className="w-full h-full object-cover"
-                        controls={isPlaying}
-                        playsInline
-                      />
-
-                      {!isPlaying && (
-                        <button
-                          type="button"
-                          onClick={() => handlePlay(index, "mobile")}
-                          className="absolute inset-0 flex items-center justify-center z-20"
+                return (
+                  <CarouselItem
+                    key={index}
+                    className="pl-4"
+                    // “Peek” width
+                    style={{ flexBasis: "calc(100% - 3rem)" }}
+                  >
+                    <div className="space-y-3 w-full max-w-80 mx-auto">
+                      {accommodation.video ? (
+                        <div
+                          className="relative w-full rounded-2xl overflow-hidden shadow-md bg-black"
+                          style={{ aspectRatio: "5 / 8" }}
                         >
-                          <div className="bg-white/90 p-4 rounded-full shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </div>
-                        </button>
+                          <video
+                            ref={(el) => (mobileVideoRefs.current[index] = el)}
+                            src={accommodation.video}
+                            poster={accommodation.image}
+                            className="w-full h-full object-cover"
+                            controls={isPlaying}
+                            playsInline
+                          />
+                          {!isPlaying && (
+                            <button
+                              type="button"
+                              onClick={() => handlePlay(index, "mobile")}
+                              className="absolute inset-0 flex items-center justify-center z-20"
+                            >
+                              <div className="bg-white/90 p-4 rounded-full shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              </div>
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <HotelImageGallery
+                          accommodation={accommodation}
+                          className="w-full h-56 object-cover rounded-2xl shadow-md"
+                        />
                       )}
-                    </div>
-                  ) : (
-                    <HotelImageGallery
-                      accommodation={accommodation}
-                      className="w-full h-56 object-cover rounded-2xl shadow-md"
-                      // ✅ KEY FIX: don’t let inner gallery hijack swipe on mobile
-                      disableSwipeOnMobile
-                    />
-                  )}
 
-                  <div className="text-center space-y-2">
-                    <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {accommodation.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                      <div className="text-center space-y-2">
+                        <h4 className="font-semibold text-foreground">{accommodation.title}</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {accommodation.description}
+                        </p>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
       </div>
     </div>
