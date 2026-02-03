@@ -1062,7 +1062,7 @@ const IncludedSection = memo(
             {STATIC_TEXT.includedTitle}
           </h3>
           <p className="text-lg text-muted-foreground">
-            Everything you need for an unforgettable {countryName} experience
+            Everything you need for an unforgettable experience
           </p>
         </div>
 

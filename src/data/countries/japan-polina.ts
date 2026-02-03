@@ -13,6 +13,8 @@ import polinaDay07  from "@/assets/polinaday7.jpg";
 import polinaDay08  from "@/assets/polinaday8.jpg";
 import polinaDay09  from "@/assets/polinaday9.jpg";
 
+import polinaDay10  from "@/assets/japan-mt-fuji.jpg";
+
 
 import kyotohostel  from "@/assets/hostel-kyoto-1.jpg";
 import kyotohostel2  from "@/assets/hostel-kyoto-2.jpg";
@@ -186,15 +188,15 @@ export const japanPolinaData = {
       location: "Tokyo, Japan",
       heroImage: polinaDay03,
       description:
-        "Begin at the peaceful Meiji Jingu Shrine, hidden within a lush forest. Head to Harajuku's Takeshita Street for bold fashion and pop culture, followed by free time. Optional activities include visiting quirky animal cafés or racing through the streets in a Mario Kart-style go-kart experience. At night, experience Tokyo nightlife in Golden Gai, famous for its tiny themed bars.",
+        "Begin at the peaceful Meiji Jingu Shrine, hidden within a lush forest. Head to Harajuku's Takeshita Street for bold fashion and pop culture, followed by free time. Optional activities include the famous Shibuya Crossing, visiting quirky animal cafés or racing through the streets in a Mario Kart-style go-kart experience. At night, experience Tokyo nightlife in Golden Gai, famous for its tiny themed bars.",
       accommodation: { name: "Wise Owl Hostels Shibuya" },
-      highlights: "Meiji Jingu Shrine, Golden Gai nightlife"
+      highlights: "Meiji Jingu Shrine, Shibuya Crossing, Golden Gai nightlife"
     },
     {
       day: 4,
       title: "Mount Fuji → Kyoto | Scenic Travel Day",
       location: "Kyoto, Japan",
-      heroImage: japanDay04,
+      heroImage: polinaDay10,
       description:
         "Today is all about the journey. Travel toward Mount Fuji, riding cable cars, enjoying stunning views, and cruising by boat across Lake Ashi. Continue on to Kyoto via trains and bus, taking in Japan's beautiful countryside along the way.",
       accommodation: { name: "Piece Hostel Sanjo, Kyoto" },
@@ -221,25 +223,26 @@ export const japanPolinaData = {
       highlights: "Arashiyama Bamboo Forest"
     },
     {
-      day: 7,
-      title: "Osaka | Nara Day Trip",
-      location: "Osaka, Japan",
-      heroImage: polinaDay07,
-      description:
-        "Travel to Osaka with a stop at Nara Park, home to friendly, free-roaming deer. Feed the deer, explore the park, and soak up the relaxed atmosphere before continuing on to Osaka.",
-      accommodation: { name: "Cogo Tennoji, Osaka" },
-      highlights: "Nara Park"
-    },
-    {
-      day: 8,
-      title: "Osaka | Castle & Free Exploration",
-      location: "Osaka, Japan",
-      heroImage: polinaDay08,
-      description:
-        "Start the day with a walk to Osaka Castle, one of Japan's most famous landmarks. The rest of the day is free to explore Osaka's food scene, markets, and nightlife.",
-      accommodation: { name: "Cogo Tennoji, Osaka" },
-      highlights: "Osaka Castle"
-    },
+  day: 7,
+  title: "Osaka | Bullet Train & Osaka Castle",
+  location: "Osaka, Japan",
+  heroImage: polinaDay08,
+  description:
+    "Travel to Osaka by bullet train, then visit Osaka Castle, one of Japan’s most famous landmarks. The rest of the day is free for shopping and exploring the city at your own pace.",
+  accommodation: { name: "Cogo Tennoji, Osaka" },
+  highlights: "Bullet Train, Osaka Castle, Shopping"
+},
+{
+  day: 8,
+  title: "Osaka | Nara Park & Great Buddha",
+  location: "Nara, Japan",
+  heroImage: polinaDay07,
+  description:
+    "Head out to Nara Park to meet the friendly, free-roaming deer and explore the area. Then enjoy a free afternoon to wander, relax, and explore more of Nara or return to Osaka.",
+  accommodation: { name: "Cogo Tennoji, Osaka" },
+  highlights: "Nara Park"
+},
+
     {
       day: 9,
       title: "Osaka | Sushi & Farewell Night",
@@ -279,6 +282,7 @@ export const japanPolinaData = {
       title: "Meals",
       items: [
         { text: "1 × Dinner" },
+        { text: "1 × Lunch" },
         { text: "Sake tasting experience" },
       ]
     },
