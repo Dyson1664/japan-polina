@@ -162,13 +162,13 @@ export const japanPolinaData = {
       description:
         "Welcome to Japan! Arrive in Tokyo and make your way to the hotel by train (your tour guide will assist every step of the way). After settling in, meet your fellow travelers and kick things off with a lively welcome dinner with 2 hours of free-flow drinks included.",
       meals: "Dinner",
-      accommodation: { name: "Wise Owl Hostels Shibuya" },
+      accommodation: { name: "Wise Owl Hostels Shibuya or similar" },
       highlights: "Welcome dinner with 2 hours free flow",
       transportation: {
           mode: "Train",
-        from: "Narita/Haneda Airport",
-        to: "Knot Hotel, Tokyo",
-        duration: "≈ 60 Minutes by train",
+        from: "Haneda Airport",
+        to: "Wise Owl Hostels Shibuya",
+        duration: "≈ 50 Minutes by train",
 
       }
     },
@@ -179,7 +179,7 @@ export const japanPolinaData = {
       heroImage: polinaDay02,
       description:
         "Start the day at the iconic Kaminarimon Gate, followed by a visit to Senso-ji Temple. Enjoy a guided sake tasting at a premium sake pub, then stroll through Ameyoko Shopping Street, sampling local snacks and soaking in the atmosphere. Evening is free or join an optional group dinner.",
-      accommodation: { name: "Wise Owl Hostels Shibuya" },
+      accommodation: { name: "Wise Owl Hostels Shibuya or similar" },
       highlights: "Sake tasting experience"
     },
     {
@@ -189,7 +189,7 @@ export const japanPolinaData = {
       heroImage: polinaDay03,
       description:
         "Begin at the peaceful Meiji Jingu Shrine, hidden within a lush forest. Head to Harajuku's Takeshita Street for bold fashion and pop culture, followed by free time. Optional activities include the famous Shibuya Crossing, visiting quirky animal cafés or racing through the streets in a Mario Kart-style go-kart experience. At night, experience Tokyo nightlife in Golden Gai, famous for its tiny themed bars.",
-      accommodation: { name: "Wise Owl Hostels Shibuya" },
+      accommodation: { name: "Wise Owl Hostels Shibuya or similar" },
       highlights: "Meiji Jingu Shrine, Shibuya Crossing, Golden Gai nightlife"
     },
     {
@@ -199,7 +199,7 @@ export const japanPolinaData = {
       heroImage: polinaDay10,
       description:
         "Today is all about the journey. Travel toward Mount Fuji, riding cable cars, enjoying stunning views, and cruising by boat across Lake Ashi. Continue on to Kyoto via trains and bus, taking in Japan's beautiful countryside along the way.",
-      accommodation: { name: "Piece Hostel Sanjo, Kyoto" },
+      accommodation: { name: "Piece Hostel Sanjo, Kyoto or similar" },
       highlights: "Hakone loop, Lake Ashi cruise, Owakudani ropeway, Mt Fuji views, shinkansen to Kyoto"
     },
     {
@@ -209,7 +209,7 @@ export const japanPolinaData = {
       heroImage: polinaDay05,
       description:
         "Rise early to beat the crowds at the iconic Fushimi Inari Taisha, famous for its endless red torii gates. Continue to Kiyomizu-dera, Kyoto's iconic wooden temple perched on a hillside with stunning views. The rest of the day is relaxed with time to explore Kyoto at your own pace.",
-      accommodation: { name: "Piece Hostel Sanjo, Kyoto" },
+      accommodation: { name: "Piece Hostel Sanjo, Kyoto or similar" },
       highlights: "Fushimi Inari, Kiyomizu-dera"
     },
     {
@@ -219,7 +219,7 @@ export const japanPolinaData = {
       heroImage: polinaDay06,
       description:
         "Enjoy a slow morning before walking through the magical Arashiyama Bamboo Forest. Continue on to the Monkey Forest, where wild monkeys roam freely with panoramic views over Kyoto.",
-      accommodation: { name: "Piece Hostel Sanjo, Kyoto" },
+      accommodation: { name: "Piece Hostel Sanjo, Kyoto or similar" },
       highlights: "Arashiyama Bamboo Forest"
     },
     {
@@ -229,7 +229,7 @@ export const japanPolinaData = {
   heroImage: polinaDay08,
   description:
     "Travel to Osaka by bullet train, then visit Osaka Castle, one of Japan’s most famous landmarks. The rest of the day is free for shopping and exploring the city at your own pace.",
-  accommodation: { name: "Cogo Tennoji, Osaka" },
+  accommodation: { name: "Cogo Tennoji, Osaka or similar" },
   highlights: "Bullet Train, Osaka Castle, Shopping"
 },
 {
@@ -239,7 +239,7 @@ export const japanPolinaData = {
   heroImage: polinaDay07,
   description:
     "Head out to Nara Park to meet the friendly, free-roaming deer and explore the area. Then enjoy a free afternoon to wander, relax, and explore more of Nara or return to Osaka.",
-  accommodation: { name: "Cogo Tennoji, Osaka" },
+  accommodation: { name: "Cogo Tennoji, Osaka or similar" },
   highlights: "Nara Park"
 },
 
@@ -250,7 +250,7 @@ export const japanPolinaData = {
       heroImage: polinaDay09,
       description:
         "Dive into Japanese culture with a hands-on sushi-making class in the morning. Spend the afternoon at leisure before gathering for a memorable farewell dinner with the group.",
-      accommodation: { name: "Cogo Tennoji, Osaka" },
+      accommodation: { name: "Cogo Tennoji, Osaka or similar" },
       highlights: "Sushi-making class"
     },
     {
