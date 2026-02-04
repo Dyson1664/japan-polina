@@ -13,7 +13,9 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <div className="flex flex-col items-center text-center">
               <div className="mb-6">
-                <div className="text-primary text-2xl font-bold">Imagine beyond</div>
+                <div className="text-primary text-2xl font-bold">
+                  Imagine beyond
+                </div>
                 <div className="text-lg tracking-wider">TRAVEL</div>
               </div>
               <img
@@ -67,14 +69,14 @@ const Footer = () => {
                 FAQs
               </Link>
 
-              {/* ✅ Terms & Conditions (same tab) */}
-              <a
-                href="https://www.bestofjapan10days.com/#/terms"
+              {/* ✅ INTERNAL Terms page */}
+              <Link
+                to="/terms"
                 className="block hover:text-primary transition-colors"
-                  onClick={() => window.scrollTo(0, 0)}
+                onClick={() => window.scrollTo(0, 0)}
               >
                 Terms & Conditions
-              </a>
+              </Link>
             </div>
 
             <h4 className="font-semibold mb-6 mt-8 text-primary">Resources</h4>
@@ -94,7 +96,7 @@ const Footer = () => {
                 Travel Safety
               </Link>
 
-              {/* ✅ Imaginebeyondtravel.com (same tab) */}
+              {/* ✅ EXTERNAL site */}
               <a
                 href="https://www.imaginebeyondtravel.com/"
                 className="block hover:text-primary transition-colors"
