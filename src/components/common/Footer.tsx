@@ -9,7 +9,6 @@ const Footer = () => {
     <footer className="bg-slate-800 text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-5 gap-8">
-
           {/* Logo Section */}
           <div className="lg:col-span-2">
             <div className="flex flex-col items-center text-center">
@@ -68,15 +67,13 @@ const Footer = () => {
                 FAQs
               </Link>
 
-              {/*
-              <Link
-                to="/terms"
+              {/* ✅ Terms & Conditions (same tab) */}
+              <a
+                href="https://www.bestofjapan10days.com/#/terms"
                 className="block hover:text-primary transition-colors"
-                onClick={() => window.scrollTo(0, 0)}
               >
                 Terms & Conditions
-              </Link>
-              */}
+              </a>
             </div>
 
             <h4 className="font-semibold mb-6 mt-8 text-primary">Resources</h4>
@@ -95,6 +92,14 @@ const Footer = () => {
               >
                 Travel Safety
               </Link>
+
+              {/* ✅ Imaginebeyondtravel.com (same tab) */}
+              <a
+                href="https://www.imaginebeyondtravel.com/"
+                className="block hover:text-primary transition-colors"
+              >
+                Imaginebeyondtravel.com
+              </a>
             </div>
           </div>
         </div>
@@ -105,16 +110,6 @@ const Footer = () => {
             &copy; 2025 Imagine Beyond Travel. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
-            {/*
-            <Link
-              to="/terms"
-              className="hover:text-primary transition-colors"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              Terms & Conditions
-            </Link>
-            <span>•</span>
-            */}
             <a href="#" className="hover:text-primary transition-colors">
               Privacy Policy
             </a>
