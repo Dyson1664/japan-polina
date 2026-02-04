@@ -71,6 +71,7 @@ const Footer = () => {
               <a
                 href="https://www.bestofjapan10days.com/#/terms"
                 className="block hover:text-primary transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
               >
                 Terms & Conditions
               </a>
