@@ -1,5 +1,4 @@
 // Import images - reusing from japan.ts
-import japanHero30 from "@/assets/tokyoooo.jpg";
 import japanHero33 from "@/assets/polina1.jpeg";
 import tilepolina3  from "@/assets/polina3.jpg";
 import tilepolina2  from "@/assets/polina2.jpeg";
@@ -7,13 +6,14 @@ import tilepolina2  from "@/assets/polina2.jpeg";
 import polinaDay01  from "@/assets/polinaday1.jpg";
 import polinaDay02  from "@/assets/polinaday2.jpg";
 import polinaDay03  from "@/assets/polinaday3.jpg";
-import polinaDay05  from "@/assets/polinaday5.jpg";
-import polinaDay06  from "@/assets/polinaday6.jpg";
+import polinaDay04  from "@/assets/polinaday4.jpeg";
+import polinaDay05  from "@/assets/polinaday5.jpeg";
+import polinaDay06  from "@/assets/polinaday6.jpeg";
 import polinaDay07  from "@/assets/polinaday7.jpg";
 import polinaDay08  from "@/assets/polinaday8.jpg";
 import polinaDay09  from "@/assets/polinaday9.jpg";
 
-import polinaDay10  from "@/assets/japan-mt-fuji.jpg";
+import polinaDay10  from "@/assets/polinaday10.jpg";
 
 
 import kyotohostel  from "@/assets/hostel-kyoto-1.jpg";
@@ -26,25 +26,7 @@ import osakahostel2  from "@/assets/osaka-hostel-2.jpg";
 import tokyohostel  from "@/assets/tokyo-hostel-1.jpg";
 import tokyohostel2  from "@/assets/tokyo-hostel-2.jpg";
 
-import japanHero3 from "@/assets/japan-hero3.jpg";
-import japanGarden from "@/assets/japan-garden.jpg";
-import japanTokyo from "@/assets/japan-tokyo.jpg";
-import japanSushi from "@/assets/japan-sushi.jpg";
 
-import japanDay01  from "@/assets/japan-day01-groupbb.jpg";
-import japanDay03  from "@/assets/japan-day03-group.jpg";
-import japanDay04  from "@/assets/japan-day04-main-hakone-mt-fuji.jpg";
-import japanDay05  from "@/assets/japan-day05-main-fushimi-inari.jpg";
-
-import japantea from "@/assets/japan-tea2.jpg";
-import japansword from "@/assets/japan-sword2.jpg";
-
-import japanDay07  from "@/assets/japan-last-day.jpg";
-
-import tile01  from "@/assets/japan-tile01.jpg";
-import tile02  from "@/assets/japan-tile02.jpg";
-import tile03  from "@/assets/japan-tile03.jpg";
-import tile04  from "@/assets/japan-tile04.jpg";
 
 import tokyoReel from "@/assets/japan/tokyo.mp4";
 import kyotoReel from "@/assets/japan/kyoto.mp4";
@@ -77,8 +59,8 @@ export const japanPolinaData = {
     "Experience the mesmerizing contrast of Japan, where bullet trains glide past ancient temples and neon-lit cities coexist with serene gardens. This extended 10-day group journey takes you from the vibrant energy of Tokyo to the cultural heart of Kyoto and onward to Osaka, with thoughtfully paced days and time to uncover hidden gems.",
     "Immerse yourself in Japanese culture through temple and shrine visits, sake tastings, street food, and unforgettable landscapes—from Mount Fuji's iconic scenery to historic cities rich in tradition. Blending curated highlights with free time and optional activities, this journey offers the perfect balance of structure, flexibility, and shared experiences."
   ],
-  overviewGallery2x:[tilepolina3, tilepolina2, tile02, tile03],
-  aboutImages: [japanGarden, japanTokyo],
+  overviewGallery2x:[tilepolina3, tilepolina2,tilepolina3, tilepolina2],
+  aboutImages: [tilepolina3, tilepolina3],
 
   highlights: [
     {
@@ -196,7 +178,7 @@ export const japanPolinaData = {
       day: 4,
       title: "Mount Fuji → Kyoto | Scenic Travel Day",
       location: "Kyoto, Japan",
-      heroImage: polinaDay10,
+      heroImage: polinaDay04,
       description:
         "Today is all about the journey. Travel toward Mount Fuji, riding cable cars, enjoying stunning views, and cruising by boat across Lake Ashi. Continue on to Kyoto via trains and bus, taking in Japan's beautiful countryside along the way.",
       accommodation: { name: "Piece Hostel Sanjo, Kyoto or similar" },
@@ -226,7 +208,7 @@ export const japanPolinaData = {
   day: 7,
   title: "Osaka | Bullet Train & Osaka Castle",
   location: "Osaka, Japan",
-  heroImage: polinaDay08,
+  heroImage: polinaDay07,
   description:
     "Travel to Osaka by bullet train, then visit Osaka Castle, one of Japan’s most famous landmarks. The rest of the day is free for shopping and exploring the city at your own pace.",
   accommodation: { name: "Cogo Tennoji, Osaka or similar" },
@@ -236,7 +218,7 @@ export const japanPolinaData = {
   day: 8,
   title: "Osaka | Nara Park & Great Buddha",
   location: "Nara, Japan",
-  heroImage: polinaDay07,
+  heroImage: polinaDay08,
   description:
     "Head out to Nara Park to meet the friendly, free-roaming deer and explore the area. Then enjoy a free afternoon to wander, relax, and explore more of Nara or return to Osaka.",
   accommodation: { name: "Cogo Tennoji, Osaka or similar" },
@@ -257,7 +239,7 @@ export const japanPolinaData = {
       day: 10,
       title: "Check Out & Departures",
       location: "Osaka, Japan",
-      heroImage: japanDay07,
+      heroImage: polinaDay10,
       description:
         "Check out and say goodbye to Japan and your travel crew, leaving with unforgettable memories and new friendships."
     }
