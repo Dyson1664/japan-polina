@@ -12,7 +12,7 @@ const SECTION_ONE = {
   title: "1. Booking & Payment",
   content: [
     "Deposit (non-refundable): Your spot is confirmed once the USD $500 deposit is received.",
-    "Balance: The remaining balance is due no later than 60 days before the tour start date.",
+    "Balance: The remaining balance is due no later than 70 days before the tour start date.",
     "All prices are quoted and charged in United States Dollars (USD).",
     "The traveler who paid a deposit may assign or transfer that deposit and booking to another person by written notice with the new traveler’s full name and contact details. Transfer is only permitted to the same tour date and may be subject to any third-party change fees.",
     "You must be 18 years or older to make a booking."
