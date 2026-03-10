@@ -1397,16 +1397,12 @@ export const ItineraryTemplate = memo(
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${data.heroImage})` }}
             />
-            {/* Tour Start Date Badge - Mobile Only */}
-            {(data.slug === "india-journey" ||
-              data.slug === "sri-lanka" ||
-              data.slug === "philippines") && (
-              <div className="absolute top-4 right-4 z-10">
+            {/* Tour Start Date Badge - Mobile */}
+            {data.startDate && (
+              <div className="absolute top-4 left-4 z-10">
                 <div className="bg-primary backdrop-blur-md border border-primary rounded-lg px-3 py-2 shadow-lg">
                   <p className="text-sm font-semibold text-white whitespace-nowrap">
-                    {data.slug === "india-journey" && "Tour starts Feb 27th"}
-                    {data.slug === "sri-lanka" && "Tour starts April 19th"}
-                    {data.slug === "philippines" && "Tour starts May 4th"}
+                    {`Trip starts ${data.startDate}`}
                   </p>
                 </div>
               </div>
@@ -1417,8 +1413,7 @@ export const ItineraryTemplate = memo(
                 <div className="flex items-center justify-center gap-2 text-base">
                   <MapPin className="w-4 h-4" />
                   <span>
-                    {data.slug === "india-journey" ? "Feb 27th" : data.location} •{" "}
-                    {data.duration}
+                    {data.location} • {data.duration}
                   </span>
                 </div>
               </div>
@@ -1426,23 +1421,19 @@ export const ItineraryTemplate = memo(
           </div>
 
           {/* Desktop: Grid layout */}
-          <div className="hidden md:flex w-full h-full">
+          <div className="hidden md:flex w-full h-full md:gap-2">
             {/* Left side: Main hero image (60% of screen) */}
-            <div className="w-[60%] relative overflow-hidden rounded-tl-2xl rounded-bl-2xl">
+            <div className="flex-[3] relative overflow-hidden rounded-tl-2xl rounded-bl-2xl">
               <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url(${data.heroImage})` }}
               />
               {/* Tour Start Date Badge - Top Left */}
-              {(data.slug === "india-journey" ||
-                data.slug === "sri-lanka" ||
-                data.slug === "philippines") && (
+              {data.startDate && (
                 <div className="absolute top-6 left-6 z-10">
                   <div className="bg-primary backdrop-blur-md border border-primary rounded-lg px-3 py-1.5">
                     <p className="text-sm font-semibold text-white">
-                      {data.slug === "india-journey" && "Tour starts Feb 27th"}
-                      {data.slug === "sri-lanka" && "Tour starts April 19th"}
-                      {data.slug === "philippines" && "Tour starts May 4th"}
+                      {`Trip starts ${data.startDate}`}
                     </p>
                   </div>
                 </div>
@@ -1462,7 +1453,7 @@ export const ItineraryTemplate = memo(
                   <div className="flex items-center justify-center gap-2 text-lg">
                     <MapPin className="w-5 h-5" />
                     <span>
-                      {data.startDate || data.location} • {data.duration}
+                      {data.location} • {data.duration}
                     </span>
                   </div>
                 </div>
@@ -1470,9 +1461,9 @@ export const ItineraryTemplate = memo(
             </div>
 
             {/* Right side: 2 images on top, review section on bottom */}
-            <div className="w-[40%] h-full flex flex-col gap-0">
+            <div className="flex-[2] h-full flex flex-col gap-0">
               {/* Top row: 2 images */}
-              <div className="h-1/2 md:h-[55%] grid grid-cols-2 gap-0">
+              <div className="h-1/2 md:h-[55%] grid grid-cols-2 gap-2">
                 {overviewFour.slice(0, 2).map((src, index) => {
                   const src2x = data.overviewGallery2x?.[index] || undefined;
                   const cornerClass = index === 1 ? "rounded-tr-2xl" : "";

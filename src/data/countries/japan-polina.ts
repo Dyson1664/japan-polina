@@ -52,6 +52,7 @@ export const japanPolinaData = {
   subtitle: "An extended journey through the perfect harmony of ancient traditions and cutting-edge modernity",
   location: "Japan",
   duration: "10 days",
+  startDate: "June 4th 2026",
   heroImage: japanHero33,
   price: "USD $1,779",
   route: ["Tokyo", "Mt. Fuji", "Kyoto", "Osaka"],
